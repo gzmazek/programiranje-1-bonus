@@ -11,12 +11,27 @@ let rec max_cal acc = function
     | a :: 0 :: sez -> max_cal (max acc a) sez
     | a :: b :: sez -> max_cal acc ((a + b) :: sez)
 
+let vrini (a, b, c) x = if c > x then (a, b, c) else (
+  if b > x then (a, b, x) else (
+    if a > x then (a, x, b) else 
+      (x, a, b)
+  )
+)
+
+let rec max_cal_3 (x, y, z) = function
+    | [] -> (x + y + z)
+    | a :: [] -> let (u, v, p) = vrini (x, y, z) a in (u + v + p)
+    | 0 :: sez -> max_cal_3 (x, y, z) sez
+    | a :: 0 :: sez -> max_cal_3 (vrini (x, y, z) a) sez
+    | a :: b :: sez -> max_cal_3 (x, y, z) ((a + b) :: sez)
+
 let naloga1 vsebina_datoteke =
     let sez = load vsebina_datoteke in
     string_of_int (max_cal 0 sez)
     
 let naloga2 vsebina_datoteke =
-    vsebina_datoteke
+    let sez = load vsebina_datoteke in
+    string_of_int (max_cal_3 (0, 0, 0) sez)
 
 let _ =
   let preberi_datoteko ime_datoteke =
