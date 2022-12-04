@@ -20,6 +20,13 @@ let rec element_v_preseku konec = function
     then a
     else element_v_preseku konec sez
 
+let rec element_v_preseku_2 konec1 konec2 = function
+  | a :: sez -> 
+    if (String.contains konec1 a) && (String.contains konec2 a)
+    then a
+    else element_v_preseku_2 konec1 konec2 sez
+  | _ -> failwith "Element v preseku 2 necesa ni matchal!"
+
 let presek vrstica = element_v_preseku (druga_polovica vrstica) (prva_polovica_seznam vrstica)
 
 let abeceda = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -30,13 +37,17 @@ let rec sum acc = function
   | [] -> acc
   | vrs :: sez -> sum (acc + (evaluate (presek vrs))) sez
 
+let rec sum_2 acc = function
+    | x1 :: x2 :: x3 :: sez -> sum_2 (acc + evaluate (element_v_preseku_2 x2 x3 (explode x1))) sez
+    | _ -> acc
+
 let naloga1 vsebina_datoteke =
     let sez = load vsebina_datoteke in
     string_of_int (sum 0 sez)
     
 let naloga2 vsebina_datoteke =
     let sez = load vsebina_datoteke in
-    string_of_int (sum 0 sez)
+    string_of_int (sum_2 0 sez)
 
 let _ =
   let preberi_datoteko ime_datoteke =
