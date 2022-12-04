@@ -2,23 +2,41 @@ let load vsebina_datoteke =
   let s = String.split_on_char '\n' vsebina_datoteke in
   s |> List.map String.trim
 
+let explode str = (*Funkcija ni moja, StackOverflow*)
+  let rec exp a b =
+    if a < 0 then b
+    else exp (a - 1) (str.[a] :: b)
+  in
+  exp (String.length str - 1) []
+
+let prva_polovica_seznam vrstica = explode (String.sub vrstica 0 ((String.length vrstica) / 2))
+
+let druga_polovica vrstica = String.sub vrstica ((String.length vrstica) / 2) ((String.length vrstica) / 2)
+
+let rec element_v_preseku konec = function
+  | [] -> failwith "Nekje naj ne bi bilo preseka"
+  | a :: sez -> 
+    if String.contains konec a
+    then a
+    else element_v_preseku konec sez
+
+let presek vrstica = element_v_preseku (druga_polovica vrstica) (prva_polovica_seznam vrstica)
+
+let abeceda = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+let evaluate crka = StringLabels.index abeceda crka
+
 let rec sum acc = function
   | [] -> acc
-  | vrs :: sez -> sum (acc + (evaluate vrs)) sez
-
-let prva_polovica vrstica = sub vrstica 0 ((lenght vrstica) / 2)
-
-let druga_polovica vrstica = ()
-
-let evaluate vrstica = ()
+  | vrs :: sez -> sum (acc + (evaluate (presek vrs))) sez
 
 let naloga1 vsebina_datoteke =
     let sez = load vsebina_datoteke in
-    string_of_int (max_cal 0 sez)
+    string_of_int (sum 0 sez)
     
 let naloga2 vsebina_datoteke =
     let sez = load vsebina_datoteke in
-    string_of_int (max_cal_3 (0, 0, 0) sez)
+    string_of_int (sum 0 sez)
 
 let _ =
   let preberi_datoteko ime_datoteke =
