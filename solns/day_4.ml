@@ -7,16 +7,15 @@ let predelaj vrstica = (String.split_on_char ',' vrstica) |> List.map (String.sp
 let determine vrstica = let [[x1; x2]; [y1; y2]] = predelaj vrstica in
     (int_of_string x1 - int_of_string y1) * (int_of_string y2 - int_of_string x2) >= 0
 
-let stevilo_v_preseku vrstica = let [[x1; x2]; [y1; y2]] = predelaj vrstica in
-    (Int.abs ((max (int_of_string x1) (int_of_string x2)) - (min (int_of_string y1) (int_of_string y2)))) + 1
+let determine_presek vrstica = let [[x1; x2]; [y1; y2]] = predelaj vrstica in
+    ((max (int_of_string x1) (int_of_string y1)) - (min (int_of_string x2) (int_of_string y2))) <= 0
 
-(*ta int_of_string je grozen, ni se mi dalo pol krajsat kode*)
-
-let rec sestej acc = function
+let rec count_presek acc = function
   | [] -> acc
-  | x :: xs -> if determine x then 
-                sestej (acc + (stevilo_v_preseku x)) xs
-              else sestej acc xs
+  | x :: xs -> 
+    if determine_presek x then
+      count_presek (acc + 1) xs
+    else count_presek acc xs     
 
 let rec count acc = function
   | [] -> acc
@@ -31,7 +30,7 @@ let naloga1 vsebina_datoteke =
     
 let naloga2 vsebina_datoteke =
     let sez = load vsebina_datoteke in
-    string_of_int (sestej 0 sez)
+    string_of_int (count_presek 0 sez)
 
 let _ =
   let preberi_datoteko ime_datoteke =
